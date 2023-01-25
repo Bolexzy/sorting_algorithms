@@ -1,93 +1,89 @@
 #include "sort.h"
 
 /**
-* merge - merge function in merge_sort
-* @l: size of left array
-* @r: size of right array
-* @m: wbue
-* @array: array to merge in place
+* merge - Merges two subarrays of integers.
+* @array: An array to split and sort.
+* @buffer: A buffer to store the sublists.
+* @l: The left index of the sub-array..
+* @r: The right index of the sub-array.
+* @m: The middle index of the sub-array.
 */
-void merge(int *array, int l, int m, int r)
+void merge(int *array, int *buffer, size_t l, size_t m, size_t r)
 {
-	int i, j, k, n1, n2;
-	int *left_arr, *right_arr;
+	size_t i, j, k = 0;
 
-	n1 = m - l + 1;
-	n2 = r - m;
-	left_arr = malloc((n1 + n2) * sizeof(int));
-	for (i = 0; i < n1; i++)
-		left_arr[i] = array[l + i];
-	right_arr = (left_arr + n1);
-	for (j = 0; j < n2; j++)
-		right_arr[j] = array[m + j + 1];
-	i = 0;
-	j = 0;
-	k = l;
-	while (i < n1 && j < n2)
+	i = l;
+	j = m;
+	while (i < m && j < r)
 	{
-		if (left_arr[i] <= right_arr[j])
-		{
-			array[k] = left_arr[i];
-			k++;
-			i++;
-		}
+		if (array[i] < array[j])
+			buffer[k++] = array[i++];
 		else
-		{
-			array[k] = right_arr[j];
-			k++;
-			j++;
-		}
-	}
-	while (i < n1)
-	{
-		array[k++] = left_arr[i++];
-	}
-	while (i < n2)
-	{
-		array[k++] = right_arr[j++];
+			buffer[k++] = array[j++];
 	}
 
-	free(left_arr);
+	while (i < m)
+	{
+		buffer[k++] = array[i++];
+	}
+	while (j < r)
+	{
+		buffer[k++] = array[j++];
+	}
+
+	for (i = l, k = 0; i < r; i++)
+		array[i] = buffer[k++];
 }
 
 /**
-* topdown_sort - dds
-* @array: eafe
-* @left: vrcs
-* @right: sdfve
+* topdown_sort - Implements the top-down merge sort algorithm.
+* @array: An array of integers to divide and sort.
+* @buffer: A buffer to store the sublists.
+* @left: The left index of the sub-array.
+* @right: The right index of the sub-array.
 */
-void topdown_sort(int *array, int left, int right)
+void topdown_sort(int *array, int *buffer, size_t left, size_t right)
 {
-	int mid, n1;
+	size_t mid;
 
-	if (left < right)
+	if (right - left > 1)
 	{
 		mid = left + (right - left) / 2;
 
-		n1 = (mid - left) + 1;
-		topdown_sort(array, left, mid);
-		topdown_sort(array, mid + 1, right);
+		topdown_sort(array, buffer, left, mid);
+		topdown_sort(array, buffer, mid, right);
 
 		printf("Merging...\n[left]: ");
-		print_array(array, (mid - left) + 1);
+		print_array(array + left, (mid - left));
 		printf("[right]: ");
-		print_array(array + n1, (right - mid));
+		print_array(array + mid, (right - mid));
 
-		merge(array, left, mid, right);
+		merge(array, buffer, left, mid, right);
 		printf("[Done]: ");
-		print_array(array,  n1 + (right - mid));
+		print_array(array + left,  (right - left));
 	}
 }
 
 /**
-* merge_sort - svdv
-* @array: cfswv
-* @size: dfcveraf
+* merge_sort - Sort an array of integers in ascending
+*              order using the merge sort algorithm.
+* @array: An array of integers.
+* @size: The size of the array.
+*
+* Description: Implements the top-down merge sort algorithm.
 */
 void merge_sort(int *array, size_t size)
 {
+	int *buffer;
+
 	if (array == NULL || size < 2)
 		return;
 
-	topdown_sort(array, 0, size - 1);
+	buffer = malloc(sizeof(int) * size);
+	if (buffer == NULL)
+		return;
+
+	topdown_sort(array, buffer, 0, size);
+
+	free(buffer);
 }
