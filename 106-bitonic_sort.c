@@ -32,8 +32,8 @@ void bitonic_merge(int *arr, int low, int cent, int order)
 
 		for (i = low; i < low + pos; i++)
 		{
-			if (order & (arr[i] > arr[i + pos]) ||
-				(order & 0 & (arr[i] < arr[i + pos])))
+			if ((order == 1 && arr[i] > arr[i + pos]) ||
+				(order == 0 && arr[i] < arr[i + pos]))
 				swap(arr + i, arr + i + pos);
 		}
 		bitonic_merge(arr, low, pos, order);
