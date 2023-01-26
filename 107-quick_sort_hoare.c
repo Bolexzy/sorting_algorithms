@@ -6,17 +6,15 @@ void hoare_sort(int *array, size_t size, int left, int right);
 void quick_sort_hoare(int *array, size_t size);
 
 /**
- * swap_ints - Swap two integers in an array.
- * @a: The first integer to swap.
- * @b: The second integer to swap.
- */
-void swap_ints(int *a, int *b)
+* swap - Swaps two integers in an array.
+* @x: First integer.
+* @y: Second integer.
+*/
+void swap(int *x, int *y)
 {
-	int tmp;
-
-	tmp = *a;
-	*a = *b;
-	*b = tmp;
+	int temp = *x;
+	*x = *y;
+	*y = temp;
 }
 
 /**
@@ -34,26 +32,26 @@ void swap_ints(int *a, int *b)
  */
 int hoare_partition(int *array, size_t size, int left, int right)
 {
-	int pivot, above, below;
+	int pivot, i = left - 1, j;
 
 	pivot = array[right];
-	for (above = left - 1, below = right + 1; above < below;)
+	for (j = right + 1; i < j;)
 	{
 		do {
-			above++;
-		} while (array[above] < pivot);
+			i++;
+		} while (array[i] < pivot);
 		do {
-			below--;
-		} while (array[below] > pivot);
+			j--;
+		} while (array[j] > pivot);
 
-		if (above < below)
+		if (i < j)
 		{
-			swap_ints(array + above, array + below);
+			swap(array + i, array + j);
 			print_array(array, size);
 		}
 	}
 
-	return (above);
+	return (i);
 }
 
 /**
@@ -69,7 +67,7 @@ void hoare_sort(int *array, size_t size, int left, int right)
 {
 	int part;
 
-	if (right - left > 0)
+	if (left < right)
 	{
 		part = hoare_partition(array, size, left, right);
 		hoare_sort(array, size, left, part - 1);
