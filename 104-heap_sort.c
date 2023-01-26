@@ -61,7 +61,7 @@ void heap_sort(int *array, size_t size)
 		heapify(array, size, size, i);
 	}
 
-	for (i = (size - 1); i >= 0; i--)
+	for (i = (size - 1); i > 0; i--)
 	{
 		/* move current root(max) to end */
 		swap(&array[0], &array[i]);
